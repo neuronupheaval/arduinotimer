@@ -26,7 +26,7 @@ Power the assembly using your power source.
 
 ## How it works
 
-There are basically three operation modes for this timer clock:
+There are basically three modes of operation for this timer clock:
 
 1) **Clock set mode**: in this mode of operation, you have to use the
 shield keypad to set the timer clock. The underscore cursor on the display shows
