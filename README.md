@@ -28,6 +28,8 @@ shield, and has a tiny screw, which is its cursor.
 
 I had to turn it about 9-10 times until I could read the display!
 
+Upload ~/src/arduinoTimer.ino to your Arduino board.
+
 Power up the assembly, using your power source.
 
 ## How it works
