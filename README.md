@@ -29,7 +29,7 @@ Power the assembly using your power source.
 There are basically three operation modes for this timer clock:
 
 1) **Clock set mode**: in this mode of operation, you have to use the
-shield keypad to set the timer clock. The cursor on the display shows
+shield keypad to set the timer clock. The underscore cursor on the display shows
 which value will be adjusted (whether it is the seconds, the minutes, 
 or the hours). Press Up key to increase, and press Down key to decrease
 the value. Left key navigates to the left (seconds -> minutes -> hours),
