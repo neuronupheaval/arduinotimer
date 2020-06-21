@@ -5,6 +5,12 @@ LCD Keypad Shield.
 
 The software is licensed under Creative Commons CC BY 4.0 as described at: https://creativecommons.org/licenses/by/4.0/
 
+## Acknowledgement
+
+Thank you for your interest in the Arduino Timer!
+
+Special thanks to Selina, my mom, who encouraged me to finish this gift in time for her 70th birthday party.
+
 ## Required Material
 
 * Arduino Duemilanove, Diecimila, or Uno
@@ -37,7 +43,7 @@ and Right key, to the right (hours -> minutes -> seconds). Select key
 moves the timer clock to the second mode of operation.
 
 2) **Timer mode**: once you press the Select button at Mode 1, the timer clock will start 
-running. When the timer reaches 0h 0m 0s, it is moved to the next mode of operation.
+running. When the timer reaches 0h 0m 0s, it will be moved to the next mode of operation.
 
 3) **Alert mode**: when the timer exhausts at Mode 2, "Timer exhausted" will be
 shown on the LCD, and the buzzer will ring. The buzzer has to be connected
@@ -45,11 +51,3 @@ to the Arduino's Pin 3 (connect the buzzer's red or + terminal to this pin) and
 to the GND (buzzer's black or - terminal).
 
 At any time, you can press the Reset button to go back to Mode 1.
-
-## Acknowledgement
-
-Thank you for using Arduino Timer!
-
-Special thanks to Selina, my mom, who encouraged me to finish this gift in time for her 70th birthday party.
-
--Marcelo 
