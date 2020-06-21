@@ -141,17 +141,14 @@ char keyPressed() {
 }
 
 void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snipZeros) {
-  int h = snipZeros == TRUE && digits[HOURS] == 0
+  *m = (snipZeros == TRUE && digits[HOURS] == 0
     ? 0
-    : 3;
-  *m = h + (snipZeros == TRUE && digits[MINUTES] == 0
-    ? 0 
-    : (digits[MINUTES] > 9 ? 1 : 0));
-  *s = *m + (snipZeros == TRUE && digits[SECONDS] == 0
+    : 3 + (digits[MINUTES] > 9 ? 1 : 0));
+  *s = *m + (snipZeros == TRUE && digits[MINUTES] == 0
     ? 0
     : 3 + (digits[SECONDS] > 9 ? 1 : 0));
   *totalLength = *s + (snipZeros == TRUE && digits[SECONDS] == 0
-    ? 0
+    ? -2
     : 1);
   *start = (LCD_COLUMNS - *totalLength) / 2;
 }
