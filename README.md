@@ -32,7 +32,7 @@ Upload ~/src/arduinoTimer.ino to your Arduino board.
 
 Power up the assembly, using your power source.
 
-## How it works
+## User's guide
 
 There are basically three modes of operation for this timer clock:
 
