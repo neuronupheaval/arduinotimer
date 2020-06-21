@@ -31,16 +31,15 @@ There are basically three modes of operation for this timer clock:
 1) **Clock set mode**: in this mode of operation, you have to use the
 shield keypad to set the timer clock. The underscore cursor on the display shows
 which value will be adjusted (whether it is the seconds, the minutes, 
-or the hours). Press Up key to increase, and press Down key to decrease
+or the hours digits). Press Up key to increase, and press Down key to decrease
 the value. Left key navigates to the left (seconds -> minutes -> hours),
 and Right key, to the right (hours -> minutes -> seconds). Select key
 moves the timer clock to the second mode of operation.
 
-2) **Timer mode**: once you press the Select button in the previous mode of
-operation, the timer clock will start running. When the timer reaches 0h 0m 0s,
-it is moved to the next mode of operation.
+2) **Timer mode**: once you press the Select button, the timer clock will start 
+running. When the timer reaches 0h 0m 0s, it is moved to the next mode of operation.
 
-3) **Alert mode**: when the timer clock exhausts, "Timer exhausted" will be
+3) **Alert mode**: when the timer exhausts, "Timer exhausted" will be
 shown on the LCD, and the buzzer will ring. The buzzer has to be connected
 to the Arduino's pin 3 (connect the buzzer's red or + terminal to this pin) and
 to the GND (buzzer's black or - terminal).
