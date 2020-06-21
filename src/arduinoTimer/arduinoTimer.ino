@@ -95,6 +95,10 @@ int clockState = SET_CLOCK_M;
 int digits[] = { 0, 0, 0 };
 int ovrflw[] = { 3, 60, 60 };
 
+char message[] = "Cronometrando";
+char banner[4 * LCD_COLUMNS];
+const int bannerLength = 2 * (LCD_COLUMNS - 1) + strlen(message) + 1 /*null termination char*/;
+  
 void setup() {
   lcd.begin(LCD_COLUMNS, LCD_LINES);
   lcd.setCursor(0, 0);
@@ -102,6 +106,16 @@ void setup() {
   
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
+
+  // Preparação do banner.
+  char spaces[(LCD_COLUMNS - 1) /*one less char*/ + 1 /*null termination char*/];
+  for (int i = 0; i < LCD_COLUMNS - 1; ++i) {
+    spaces[i] = ' ';
+  }
+  spaces[LCD_COLUMNS - 1] = '\0';
+  strcpy(banner, spaces);
+  strcat(banner, message);
+  strcat(banner, spaces);
 }
 
 void loop() {
@@ -132,7 +146,7 @@ void runClock() {
 
 char keyPressed() {
   int value = analogRead(A0);
-  if (value < 60) return KEY_RIGHT;
+  if (value < 60)  return KEY_RIGHT;
   if (value < 200) return KEY_UP;
   if (value < 400) return KEY_DOWN;
   if (value < 600) return KEY_LEFT;
@@ -260,22 +274,8 @@ void buzz() {
 }
 
 void displayBanner() {
-  char message[] = "Cronometrando";
-
   static int start = 0;
-  char spaces[(LCD_COLUMNS - 1) /*one less char*/ + 1 /*null termination char*/];
-
-  for (int i = 0; i < LCD_COLUMNS - 1; ++i) {
-    spaces[i] = ' ';
-  }
-  spaces[LCD_COLUMNS - 1] = '\0';
-
-  int bannerLength = 2 * (LCD_COLUMNS - 1) + strlen(message) + 1 /*null termination char*/;
-  char banner[bannerLength];
-  strcpy(banner, spaces);
-  strcat(banner, message);
-  strcat(banner, spaces);
-
+    
   char partialBanner[LCD_COLUMNS + 1 /*null termination char*/];
   strncpy(partialBanner, banner + start, LCD_COLUMNS);
   partialBanner[LCD_COLUMNS] = '\0';
