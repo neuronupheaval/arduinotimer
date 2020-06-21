@@ -47,6 +47,8 @@ to the GND (buzzer's black or - terminal).
 At any time, you can press the Reset button to go back to the first mode
 of operation.
 
+## Acknowledgement
+
 Thank you for using Arduino Timer!
 
-Marcelo 
+-Marcelo 
