@@ -22,7 +22,7 @@ shield, and has a tiny screw, which is its cursor.
 
 I had to turn it about 9-10 times until I could read the display!
 
-Power the assembly using your power source.
+Power up the assembly using your power source.
 
 ## How it works
 
