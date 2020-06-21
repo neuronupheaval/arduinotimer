@@ -22,7 +22,7 @@ shield, and has a tiny screw, which is its cursor.
 
 I had to turn it about 9-10 times until I could read the display!
 
-Power up the assembly using your power source.
+Power up the assembly, using your power source.
 
 ## How it works
 
@@ -36,19 +36,20 @@ the value. Left key navigates to the left (seconds -> minutes -> hours),
 and Right key, to the right (hours -> minutes -> seconds). Select key
 moves the timer clock to the second mode of operation.
 
-2) **Timer mode**: once you press the Select button, the timer clock will start 
+2) **Timer mode**: once you press the Select button at Mode 1, the timer clock will start 
 running. When the timer reaches 0h 0m 0s, it is moved to the next mode of operation.
 
-3) **Alert mode**: when the timer exhausts, "Timer exhausted" will be
+3) **Alert mode**: when the timer exhausts at Mode 2, "Timer exhausted" will be
 shown on the LCD, and the buzzer will ring. The buzzer has to be connected
-to the Arduino's pin 3 (connect the buzzer's red or + terminal to this pin) and
+to the Arduino's Pin 3 (connect the buzzer's red or + terminal to this pin) and
 to the GND (buzzer's black or - terminal).
 
-At any time, you can press the Reset button to go back to the first mode
-of operation.
+At any time, you can press the Reset button to go back to Mode 1.
 
 ## Acknowledgement
 
 Thank you for using Arduino Timer!
+
+Special thanks to Selina, my mom, who encouraged me to finish this gift in time for her 70th birthday party.
 
 -Marcelo 
