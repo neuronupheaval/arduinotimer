@@ -22,7 +22,7 @@ shield, and has a tiny screw, which is its cursor.
 
 I had to turn it about 9-10 times until I could read the display!
 
-Power the assembly using your power source.
+Power up the assembly using your power source.
 
 ## How it works
 
@@ -36,8 +36,8 @@ the value. Left key navigates to the left (seconds -> minutes -> hours),
 and Right key, to the right (hours -> minutes -> seconds). Select key
 moves the timer clock to the second mode of operation.
 
-2) **Timer mode**: once you pressed the Select button in the previous mode of
-operation, the timer clock starts running. When the timer reaches 0h 0m 0s,
+2) **Timer mode**: once you press the Select button in the previous mode of
+operation, the timer clock will start running. When the timer reaches 0h 0m 0s,
 it is moved to the next mode of operation.
 
 3) **Alert mode**: when the timer clock exhausts, "Timer exhausted" will be
