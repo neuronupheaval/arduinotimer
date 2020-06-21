@@ -77,6 +77,12 @@
 #define MINUTES 1
 #define SECONDS 2
 
+#define LCD_COLUMNS 16
+#define LCD_LINES    2
+
+#define TRUE  1
+#define FALSE 0
+
 // Pinos padrão para o shield.
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
@@ -84,17 +90,15 @@ unsigned long lcdRefresh = 0UL;
 unsigned long keyRefresh = 0UL;
 
 int ledStatus = LOW;
-int clockState = SET_CLOCK_S;
+int clockState = SET_CLOCK_M;
 
 int digits[] = { 0, 0, 0 };
 int ovrflw[] = { 3, 60, 60 };
 
 void setup() {
-  lcd.begin(16, 2);
+  lcd.begin(LCD_COLUMNS, LCD_LINES);
   lcd.setCursor(0, 0);
   lcd.print(F(" Ajuste o timer "));
-  lcd.setCursor(0, 1);
-  lcd.print(F("0h 0m 0s"));
   
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
@@ -136,6 +140,22 @@ char keyPressed() {
   return 0;
 }
 
+void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snipZeros) {
+  int h = snipZeros == TRUE && digits[HOURS] == 0
+    ? 0
+    : 3;
+  *m = h + (snipZeros == TRUE && digits[MINUTES] == 0
+    ? 0 
+    : (digits[MINUTES] > 9 ? 1 : 0));
+  *s = *m + (snipZeros == TRUE && digits[SECONDS] == 0
+    ? 0
+    : 3 + (digits[SECONDS] > 9 ? 1 : 0));
+  *totalLength = *s + (snipZeros == TRUE && digits[SECONDS] == 0
+    ? 0
+    : 1);
+  *start = (LCD_COLUMNS - *totalLength) / 2;
+}
+
 void setClock() {
   if (millis() - keyRefresh < KEY_TIMEOUT) {
     return;
@@ -147,15 +167,11 @@ void setClock() {
 
   switch (key) {
     case KEY_UP:
-      if (++digits[hourMinOrSec] >= ovrflw[hourMinOrSec]) {
-        digits[hourMinOrSec] = 0;
-      }
+      if (++digits[hourMinOrSec] >= ovrflw[hourMinOrSec]) digits[hourMinOrSec] = 0;
       break;
       
     case KEY_DOWN:
-      if (--digits[hourMinOrSec] < 0) {
-        digits[hourMinOrSec] = ovrflw[hourMinOrSec] - 1;
-      }
+      if (--digits[hourMinOrSec] < 0) digits[hourMinOrSec] = ovrflw[hourMinOrSec] - 1;
       break;
       
     case KEY_LEFT:
@@ -167,29 +183,27 @@ void setClock() {
       break;
       
     case KEY_SELECT:
-      if (digits[SECONDS] != 0 || digits[MINUTES] != 0 || digits[HOURS] != 0) { 
-        clockState = RUN_CLOCK;
-      }
+      if (digits[SECONDS] != 0 || digits[MINUTES] != 0 || digits[HOURS] != 0) clockState = RUN_CLOCK;
       break;
   }
 
-  displayClock();
   lcd.noCursor();
+  displayClock();
 
-  int m = 3 + (digits[MINUTES] > 9 ? 1 : 0);
-  int s = m + 3 + (digits[SECONDS] > 9 ? 1 : 0);
-  
+  int m, s, totalLength, start;
+  calculateCoordinates(&m, &s, &totalLength, &start, FALSE);
+
   switch (clockState) {
     case SET_CLOCK_H:
-      lcd.setCursor(0, 1);
+      lcd.setCursor(start, 1);
       break;
     
     case SET_CLOCK_M:
-      lcd.setCursor(m, 1);
+      lcd.setCursor(start + m, 1);
       break;
     
     case SET_CLOCK_S:
-      lcd.setCursor(s, 1);
+      lcd.setCursor(start + s, 1);
       break;
   }
 
@@ -200,8 +214,15 @@ void displayClock() {
   if (clockState == RUN_CLOCK) {
     displayBanner();
   }
+
+  int m, s, totalLength, start;
+  calculateCoordinates(&m, &s, &totalLength, &start, 
+    clockState == RUN_CLOCK ? TRUE : FALSE);
   
   lcd.setCursor(0, 1);
+  lcd.print(F("                "));
+  lcd.setCursor(start, 1);
+  
   if (digits[HOURS] != 0 || clockState != RUN_CLOCK) {
     lcd.print(digits[HOURS]);
     lcd.print(F("h "));
@@ -216,8 +237,6 @@ void displayClock() {
     lcd.print(digits[SECONDS]);
     lcd.print(F("s"));
   }
-
-  lcd.print(F("      "));
   
   digitalWrite(LED_BUILTIN, 
     ledStatus = ledStatus == HIGH ? LOW : HIGH);
@@ -244,18 +263,30 @@ void buzz() {
 }
 
 void displayBanner() {
-  static int start = 0;
-  char bannerString[] = "               Cronometrando               ";
-  int bannerLength = 43;
+  char message[] = "Cronometrando";
 
-  char banner[17];
-  strncpy(banner, bannerString + start, 16);
-  banner[16] = '\0';
+  static int start = 0;
+  char spaces[(LCD_COLUMNS - 1) /*one less char*/ + 1 /*null termination char*/];
+
+  for (int i = 0; i < LCD_COLUMNS - 1; ++i) {
+    spaces[i] = ' ';
+  }
+  spaces[LCD_COLUMNS - 1] = '\0';
+
+  int bannerLength = 2 * (LCD_COLUMNS - 1) + strlen(message) + 1 /*null termination char*/;
+  char banner[bannerLength];
+  strcpy(banner, spaces);
+  strcat(banner, message);
+  strcat(banner, spaces);
+
+  char partialBanner[LCD_COLUMNS + 1 /*null termination char*/];
+  strncpy(partialBanner, banner + start, LCD_COLUMNS);
+  partialBanner[LCD_COLUMNS] = '\0';
 
   lcd.setCursor(0, 0);
-  lcd.print(banner);
+  lcd.print(partialBanner);
 
-  if (++start >= bannerLength - 16) {
+  if (++start >= bannerLength - LCD_COLUMNS) {
     start = 0;
   }
 }
