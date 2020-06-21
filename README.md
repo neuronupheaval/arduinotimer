@@ -1,4 +1,4 @@
-# Arduino Timer with DF Robot (or D1 Robot) LCD Keypad Shield
+# Arduino Timer using DF Robot (or D1 Robot) LCD Keypad Shield
 
 This is a simple implementation of a timer clock with Arduino and the DF Robot (or the Chinese counterpart, D1 Robot)
 LCD Keypad Shield.
