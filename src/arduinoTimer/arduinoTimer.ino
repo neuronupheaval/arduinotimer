@@ -228,20 +228,18 @@ void showCursorIfNeeded(int m, int s, int start) {
   lcd.noCursor();
   
   if (clockState != RUN_CLOCK) {
+    int xpos = start;
     switch (clockState) {
       case SET_CLOCK_H:
-        lcd.setCursor(start, 1);
-        break;
-      
+        break;      
       case SET_CLOCK_M:
-        lcd.setCursor(start + m, 1);
+        xpos += m;
         break;
-      
       case SET_CLOCK_S:
-        lcd.setCursor(start + s, 1);
+        xpos += s;
         break;
     }
-    
+    lcd.setCursor(xpos, 1);
     lcd.cursor();
   }
 }
