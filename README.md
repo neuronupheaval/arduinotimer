@@ -28,7 +28,7 @@ shield, and has a tiny screw, which is its cursor.
 
 I had to turn it about 9-10 times until I could read the display!
 
-Upload ~/src/arduinoTimer.ino to your Arduino board.
+Upload ~/src/arduinoTimer/arduinoTimer.ino to your Arduino board.
 
 Power up the assembly, using your power source.
 
@@ -50,6 +50,6 @@ running. When the timer reaches 0h 0m 0s, it will be moved to the next mode of o
 3) **Alert mode**: when the timer exhausts at Mode 2, "Timer exhausted" will be
 shown on the LCD, and the buzzer will ring. The buzzer has to be connected
 to the Arduino's Pin 3 (connect the buzzer's red or + terminal to this pin) and
-to the GND (buzzer's black or - terminal). Some soldering skill will help.
+to the GND Pin (buzzer's black or - terminal). Some soldering skill will help.
 
 At any time, you can press the Reset button to go back to Mode 1.
