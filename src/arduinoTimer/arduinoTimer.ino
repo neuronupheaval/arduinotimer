@@ -97,7 +97,7 @@ int ovrflw[] = { 3, 60, 60 };
 
 char message[] = "Cronometrando";
 char banner[4 * LCD_COLUMNS];
-const int bannerLength = 2 * (LCD_COLUMNS - 1) + strlen(message) + 1 /*null termination char*/;
+const int bannerLength = 2 * (LCD_COLUMNS - 1) + strlen(message) + 1 /*terminado em NULL*/;
   
 void setup() {
   lcd.begin(LCD_COLUMNS, LCD_LINES);
@@ -108,7 +108,7 @@ void setup() {
   pinMode(BUZZER_PIN, OUTPUT);
 
   // Preparação do banner.
-  char spaces[(LCD_COLUMNS - 1) /*one less char*/ + 1 /*null termination char*/];
+  char spaces[(LCD_COLUMNS - 1) /*um char a menos*/ + 1 /*terminado em NULL*/];
   for (int i = 0; i < LCD_COLUMNS - 1; ++i) {
     spaces[i] = ' ';
   }
@@ -157,17 +157,17 @@ char keyPressed() {
 void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snipZeros) {
   *m = (snipZeros == TRUE && digits[HOURS] == 0
     ? 0
-    : 3 /*uhSPACE*/ + (digits[MINUTES] > 9 ? 1/*uhSPACEd(um)*/ : 0/*xhSPACE(um)*/));
+    : 3 /*uhESPAÇO*/ + (digits[MINUTES] > 9 ? 1/*uhESPAÇOd(um)*/ : 0/*xhESPAÇO(um)*/));
     
   *s = *m + (snipZeros == TRUE && digits[MINUTES] == 0
     ? 0
-    : 3 /*umSPACE*/ + (digits[SECONDS] > 9 ? 1/*umSPACEd(us)*/ : 0/*umSPACE(us)*/));
+    : 3 /*umESPAÇO*/ + (digits[SECONDS] > 9 ? 1/*umESPAÇOd(us)*/ : 0/*umESPAÇO(us)*/));
     
   *totalLength = *s + (snipZeros == TRUE && digits[SECONDS] == 0
-    ? -1 /*discount extra SPACE*/
-    :  2 /*us*/ + (*s == 0 && digits[SECONDS] > 9 ? 1 : 0)); /*count extra digit when hour 
-                                                               is zero, minute is zero, and
-                                                               seconds have two digits*/
+    ? -1 /*desconta ESPAÇO extra*/
+    :  2 /*us*/ + (*s == 0 && digits[SECONDS] > 9 ? 1 : 0)); /*conta dígito extra quando a 
+                                                               hora é 0, o minuto é 0 e os
+                                                               segundos têm 2 dígitos*/
   *start = (LCD_COLUMNS - *totalLength) / 2;
 }
 
@@ -280,7 +280,7 @@ void buzz() {
 void displayBanner() {
   static int start = 0;
     
-  char partialBanner[LCD_COLUMNS + 1 /*null termination char*/];
+  char partialBanner[LCD_COLUMNS + 1 /*terminado em NULL*/];
   strncpy(partialBanner, banner + start, LCD_COLUMNS);
   partialBanner[LCD_COLUMNS] = '\0';
 
