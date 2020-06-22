@@ -162,7 +162,7 @@ void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snip
     ? 0
     : 3 + (digits[SECONDS] > 9 ? 1 : 0));
   *totalLength = *s + (snipZeros == TRUE && digits[SECONDS] == 0
-    ? -2
+    ? -1
     : 1);
   *start = (LCD_COLUMNS - *totalLength) / 2;
 }
