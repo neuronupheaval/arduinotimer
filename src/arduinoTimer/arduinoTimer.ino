@@ -98,7 +98,7 @@ int ovrflw[] = { 3, 60, 60 };
 char message[] = "Cronometrando";
 char banner[4 * LCD_COLUMNS];
 const int bannerLength = 2 * (LCD_COLUMNS - 1) + strlen(message) + 1 /*terminado em NULL*/;
-  
+
 void setup() {
   lcd.begin(LCD_COLUMNS, LCD_LINES);
   lcd.setCursor(0, 0);
@@ -157,7 +157,7 @@ char keyPressed() {
 void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snipZeros) {
   *m = (snipZeros == TRUE && digits[HOURS] == 0
     ? 0
-    : 3 /*uhESPAÇO*/ + (digits[MINUTES] > 9 ? 1/*uhESPAÇOd(um)*/ : 0/*xhESPAÇO(um)*/));
+    : 3 /*uhESPAÇO*/ + (digits[MINUTES] > 9 ? 1/*uhESPAÇOd(um)*/ : 0/*uhESPAÇO(um)*/));
     
   *s = *m + (snipZeros == TRUE && digits[MINUTES] == 0
     ? 0
