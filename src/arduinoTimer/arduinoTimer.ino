@@ -116,6 +116,11 @@ void setup() {
   strcpy(banner, spaces);
   strcat(banner, message);
   strcat(banner, spaces);
+
+  // Inicialização.
+  int m, s, totalLength, start;
+  calculateCoordinates(&m, &s, &totalLength, &start, FALSE);
+  displayClock(start);
 }
 
 void loop() {
@@ -141,44 +146,47 @@ void runClock() {
 
   lcdRefresh = millis();
   decrementClock();
-  if (clockState == RUN_CLOCK) displayClock();
+  if (clockState != CLOCK_EXPIRED) {
+    int m, s, totalLength, start;
+    calculateCoordinates(&m, &s, &totalLength, &start, TRUE);
+    displayClock(start);
+  }
 }
 
-char keyPressed() {
-  int value = analogRead(A0);
-  if (value < 60)  return KEY_RIGHT;
-  if (value < 200) return KEY_UP;
-  if (value < 400) return KEY_DOWN;
-  if (value < 600) return KEY_LEFT;
-  if (value < 800) return KEY_SELECT;
-  return 0;
-}
-
-void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snipZeros) {
-  *m = (snipZeros == TRUE && digits[HOURS] == 0
-    ? 0
-    : 3 /*uhESPAÇO*/ + (digits[MINUTES] > 9 ? 1/*uhESPAÇOd(um)*/ : 0/*uhESPAÇO(um)*/));
-    
-  *s = *m + (snipZeros == TRUE && digits[MINUTES] == 0
-    ? 0
-    : 3 /*umESPAÇO*/ + (digits[SECONDS] > 9 ? 1/*umESPAÇOd(us)*/ : 0/*umESPAÇO(us)*/));
-    
-  *totalLength = *s + (snipZeros == TRUE && digits[SECONDS] == 0
-    ? -1 /*desconta ESPAÇO extra*/
-    :  2 /*us*/ + (*s == 0 && digits[SECONDS] > 9 ? 1 : 0)); /*conta 2o. dígito quando a 
-                                                               hora é 0, o minuto é 0 e os
-                                                               segundos têm 2 dígitos*/
-  *start = (LCD_COLUMNS - *totalLength) / 2;
+void buzz() {
+  lcd.setCursor(0, 0);
+  lcd.print(F(" Timer expirado "));
+  digitalWrite(BUZZER_PIN, HIGH);
 }
 
 void setClock() {
   if (millis() - keyRefresh < KEY_TIMEOUT) {
     return;
-  }
-  
+  }  
   keyRefresh = millis();
-  char key = keyPressed();
+
+  int idle = processKeypad();
+
+  int m, s, totalLength, start;
+  calculateCoordinates(&m, &s, &totalLength, &start, FALSE);
+
+  if (!idle) {
+    displayClock(start);
+  }
+  showCursorIfNeeded(m, s, start);
+}
+
+int processKeypad() {
+  char key = '\0';
+  int idleness = FALSE;
   int hourMinOrSec = clockState;
+  int value = analogRead(A0);
+  
+  if (value < 800) key = KEY_SELECT;
+  if (value < 600) key = KEY_LEFT;
+  if (value < 400) key = KEY_DOWN;
+  if (value < 200) key = KEY_UP;
+  if (value < 60)  key = KEY_RIGHT;
 
   switch (key) {
     case KEY_UP:
@@ -200,44 +208,49 @@ void setClock() {
     case KEY_SELECT:
       if (digits[SECONDS] != 0 || digits[MINUTES] != 0 || digits[HOURS] != 0) clockState = RUN_CLOCK;
       break;
-  }
 
-  lcd.noCursor();
-  displayClock();
-
-  int m, s, totalLength, start;
-  calculateCoordinates(&m, &s, &totalLength, &start, FALSE);
-
-  switch (clockState) {
-    case SET_CLOCK_H:
-      lcd.setCursor(start, 1);
-      break;
-    
-    case SET_CLOCK_M:
-      lcd.setCursor(start + m, 1);
-      break;
-    
-    case SET_CLOCK_S:
-      lcd.setCursor(start + s, 1);
+    default:
+      idleness = TRUE;
       break;
   }
 
-  if (clockState != RUN_CLOCK) lcd.cursor();
+  return idleness;
 }
 
-void displayClock() {
+void displayClock(int start) {
   if (clockState == RUN_CLOCK) {
     displayBanner();
   }
+  printClockToLcd(start);
+}
 
-  int m, s, totalLength, start;
-  calculateCoordinates(&m, &s, &totalLength, &start, 
-    clockState == RUN_CLOCK ? TRUE : FALSE);
+void showCursorIfNeeded(int m, int s, int start) {
+  lcd.noCursor();
   
+  if (clockState != RUN_CLOCK) {
+    switch (clockState) {
+      case SET_CLOCK_H:
+        lcd.setCursor(start, 1);
+        break;
+      
+      case SET_CLOCK_M:
+        lcd.setCursor(start + m, 1);
+        break;
+      
+      case SET_CLOCK_S:
+        lcd.setCursor(start + s, 1);
+        break;
+    }
+    
+    lcd.cursor();
+  }
+}
+
+void printClockToLcd(int start) {
   lcd.setCursor(0, 1);
   lcd.print(F("                "));
+
   lcd.setCursor(start, 1);
-  
   if (digits[HOURS] != 0 || clockState != RUN_CLOCK) {
     lcd.print(digits[HOURS]);
     lcd.print(F("h "));
@@ -252,9 +265,25 @@ void displayClock() {
     lcd.print(digits[SECONDS]);
     lcd.print(F("s"));
   }
-  
+
+  // Pisca o LED da placa Arduino.
   digitalWrite(LED_BUILTIN, 
     ledStatus = ledStatus == HIGH ? LOW : HIGH);
+}
+
+void displayBanner() {
+  static int start = 0;
+    
+  char partialBanner[LCD_COLUMNS + 1 /*terminado em NULL*/];
+  strncpy(partialBanner, banner + start, LCD_COLUMNS);
+  partialBanner[LCD_COLUMNS] = '\0';
+
+  lcd.setCursor(0, 0);
+  lcd.print(partialBanner);
+
+  if (++start >= bannerLength - LCD_COLUMNS) {
+    start = 0;
+  }
 }
 
 void decrementClock() {
@@ -271,23 +300,18 @@ void decrementClock() {
   }
 }
 
-void buzz() {
-  lcd.setCursor(0, 0);
-  lcd.print(F(" Timer expirado "));
-  digitalWrite(BUZZER_PIN, HIGH);
-}
-
-void displayBanner() {
-  static int start = 0;
+void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snipZeros) {
+  *m = (snipZeros == TRUE && digits[HOURS] == 0
+    ? 0
+    : 3 /*uhESPAÇO*/ + (digits[MINUTES] > 9 ? 1/*uhESPAÇOd(um)*/ : 0/*uhESPAÇO(um)*/));
     
-  char partialBanner[LCD_COLUMNS + 1 /*terminado em NULL*/];
-  strncpy(partialBanner, banner + start, LCD_COLUMNS);
-  partialBanner[LCD_COLUMNS] = '\0';
-
-  lcd.setCursor(0, 0);
-  lcd.print(partialBanner);
-
-  if (++start >= bannerLength - LCD_COLUMNS) {
-    start = 0;
-  }
+  *s = *m + (snipZeros == TRUE && digits[MINUTES] == 0
+    ? 0
+    : 3 /*umESPAÇO*/ + (digits[SECONDS] > 9 ? 1/*umESPAÇOd(us)*/ : 0/*umESPAÇO(us)*/));
+    
+  *totalLength = *s + (snipZeros == TRUE && digits[SECONDS] == 0
+    ? -1 /*desconta ESPAÇO extra*/
+    :  2 /*us*/ + (*s == 0 && digits[SECONDS] > 9 ? 1/*dus*/ : 0/*us*/));
+    
+  *start = (LCD_COLUMNS - *totalLength) / 2;
 }
