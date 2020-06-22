@@ -165,7 +165,7 @@ void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snip
     
   *totalLength = *s + (snipZeros == TRUE && digits[SECONDS] == 0
     ? -1 /*desconta ESPAÇO extra*/
-    :  2 /*us*/ + (*s == 0 && digits[SECONDS] > 9 ? 1 : 0)); /*conta dígito extra quando a 
+    :  2 /*us*/ + (*s == 0 && digits[SECONDS] > 9 ? 1 : 0)); /*conta 2o. dígito quando a 
                                                                hora é 0, o minuto é 0 e os
                                                                segundos têm 2 dígitos*/
   *start = (LCD_COLUMNS - *totalLength) / 2;
