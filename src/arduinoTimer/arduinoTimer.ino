@@ -157,13 +157,17 @@ char keyPressed() {
 void calculateCoordinates(int* m, int* s, int* totalLength, int* start, int snipZeros) {
   *m = (snipZeros == TRUE && digits[HOURS] == 0
     ? 0
-    : 3 + (digits[MINUTES] > 9 ? 1 : 0));
+    : 3 /*uhSPACE*/ + (digits[MINUTES] > 9 ? 1/*uhSPACEd(um)*/ : 0/*xhSPACE(um)*/));
+    
   *s = *m + (snipZeros == TRUE && digits[MINUTES] == 0
     ? 0
-    : 3 + (digits[SECONDS] > 9 ? 1 : 0));
+    : 3 /*umSPACE*/ + (digits[SECONDS] > 9 ? 1/*umSPACEd(us)*/ : 0/*umSPACE(us)*/));
+    
   *totalLength = *s + (snipZeros == TRUE && digits[SECONDS] == 0
-    ? -1
-    : 2);
+    ? -1 /*discount extra SPACE*/
+    :  2 /*us*/ + (*s == 0 && digits[SECONDS] > 9 ? 1 : 0)); /*count extra digit when hour 
+                                                               is zero, minute is zero, and
+                                                               seconds have two digits*/
   *start = (LCD_COLUMNS - *totalLength) / 2;
 }
 
