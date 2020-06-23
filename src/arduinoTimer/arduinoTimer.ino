@@ -117,10 +117,11 @@ void setup() {
   strcat(banner, message);
   strcat(banner, spaces);
 
-  // Inicialização.
+  // Preparação do mostrador do timer.
   int m, s, totalLength, start;
   calculateCoordinates(&m, &s, &totalLength, &start, FALSE);
   displayClock(start);
+  showCursorIfNeeded(m, s, start);
 }
 
 void loop() {
@@ -149,6 +150,7 @@ void runClock() {
   if (clockState != CLOCK_EXPIRED) {
     int m, s, totalLength, start;
     calculateCoordinates(&m, &s, &totalLength, &start, TRUE);
+    
     displayClock(start);
   }
 }
@@ -166,14 +168,13 @@ void setClock() {
   keyRefresh = millis();
 
   int idle = processKeypad();
-
-  int m, s, totalLength, start;
-  calculateCoordinates(&m, &s, &totalLength, &start, FALSE);
-
   if (!idle) {
+    int m, s, totalLength, start;
+    calculateCoordinates(&m, &s, &totalLength, &start, FALSE);
+
     displayClock(start);
+    showCursorIfNeeded(m, s, start);
   }
-  showCursorIfNeeded(m, s, start);
 }
 
 int processKeypad() {
@@ -226,7 +227,6 @@ void displayClock(int start) {
 
 void showCursorIfNeeded(int m, int s, int start) {
   lcd.noCursor();
-  
   if (clockState != RUN_CLOCK) {
     int xpos = start;
     switch (clockState) {
